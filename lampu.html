@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+
+<audio id="myAudio"><source src="wiwiw.wav" type="audio/ogg"></audio>
+<audio id="myAudio1"><source src="kuning.wav" type="audio/ogg"></audio>
+<audio id="myAudio2"><source src="ijo.wav" type="audio/ogg"></audio>
+<body>
+
+    <div class="light-container">
+        <div class="lights">
+          <div class="light red"></div>
+          <div class="light yellow"></div>
+          <div class="light green"></div>
+        </div>
+      </div>
+      <div style="display: none;">
+      <button class="change-light stop" onclick = playAudio(),pauseAudio1(),pauseAudio2()>Stop</button>
+      <button class="change-light slow"onclick = playAudio1(),pauseAudio(),pauseAudio2()>Slow</button>
+      <button class="change-light go"onclick = playAudio2(),pauseAudio(),pauseAudio1()>Go</button>
+    </div>
+      
+      <script src="firebase.js"></script>
+      <script src="sound.js"></script>
+
+<script>
+var config= {
+  apiKey: "AIzaSyBYVwVZUBLXSm7iR5Fp6k-dziJGEuhwExk",
+  authDomain: "megaboth007.firebaseapp.com",
+  databaseURL: "https://megaboth007.firebaseio.com",
+  projectId: "megaboth007",
+  storageBucket: "megaboth007.appspot.com",
+  messagingSenderId: "942424390212",
+  appId: "1:942424390212:web:c3622743b0fba57b5a1a11"
+  
+};
+firebase.initializeApp(config);
+var dbRef = firebase.database();
+
+const lightController = document.querySelector(".lights");
+const lights = document.querySelectorAll(".change-light");
+function clearLights() {
+  lightController.className = "lights off";
+}
+function handleClick() {
+  // Clear lights on any button click
+  clearLights();
+  
+  /* One function handles all the lights by listening for a 
+     class name within each button */
+  if (this.classList.contains("stop")) {
+    lightController.classList.add("stop");
+  } else if (this.classList.contains("slow")) {
+    lightController.classList.add("slow");
+  } else if (this.classList.contains("go")) {
+    lightController.classList.add("go");
+  }
+}
+// Loop through each ligth and bind a click event 
+lights.forEach(light => {
+  light.addEventListener("click", handleClick);
+});
+
+//melakukan call back pada node firebase      
+var db = firebase.database();
+var ref = db.ref("/suara");
+
+ref.on("value", function(snapshot) {
+  
+if (snapshot.val()==0){
+      clearLights()
+      lightController.classList.add("stop")
+      playAudio()
+      pauseAudio1()
+      pauseAudio2()
+
+}
+else if (snapshot.val()==1){
+      clearLights()
+      lightController.classList.add("slow")
+      playAudio1()
+      pauseAudio()
+      pauseAudio2()
+
+}
+else if (snapshot.val()==2){
+      clearLights()
+      lightController.classList.add("go")
+      playAudio2()
+      pauseAudio()
+      pauseAudio1()
+}
+
+
+})
+
+
+
+
+
+
+    </script>
+</body>
+</html>
